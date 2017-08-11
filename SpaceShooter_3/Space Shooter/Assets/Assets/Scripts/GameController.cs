@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour {
      public GUIText scoreText;
      public GUIText missionText;
      public GUIText message;
+     public GUIText fuelText;
      public Vector3 spawnValues;
      public int hazardCount;
      public int bossCount;
@@ -43,9 +44,12 @@ public class GameController : MonoBehaviour {
           restartText.text = "";
           allSpawnsCompleted = false;
           UpdateScore();
+          GameState.fuelAmount = 50;
+          UpdateFuel();
           GameState.bossesNotDestroyed = 0;
           GameState.playerDestroyed = 0;
           StartCoroutine (SpawnWaves());
+          StartCoroutine(DecreaseFuel());
      }
 
 
@@ -160,6 +164,29 @@ public class GameController : MonoBehaviour {
           allSpawnsCompleted = true;
      }
 
+     IEnumerator DecreaseFuel()
+    {
+        yield return new WaitForSeconds(1f);
+        GameState.fuelAmount--;
+        UpdateFuel();
+        if(GameState.fuelAmount <= 0)
+        {
+            GameOver();
+        }
+        StartCoroutine(DecreaseFuel());
+    }
+
+    void UpdateFuel()
+    {
+        fuelText.text = "Fuel: " + GameState.fuelAmount;
+    }
+
+    public void AddFuel(int fuelValue)
+    {
+        GameState.fuelAmount += fuelValue;
+        GameState.fuelAmount = Mathf.Clamp(GameState.fuelAmount, 0, 50);
+        UpdateFuel();
+    }
 
      IEnumerator ChangeLevel(Scene scene) {
           fadeTime = GameObject.Find("_GM").GetComponent<Fader>().BeginFade(1);

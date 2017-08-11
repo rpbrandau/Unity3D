@@ -51,6 +51,14 @@ public class DestroyByContact : MonoBehaviour {
 
                if (gameObject.CompareTag("Shield") == false)
                     Destroy(gameObject);
+
+               //explodes the Player Object if it runs into the Boss
+               else if (takeDamage > 0 && other.CompareTag("Player"))
+                {
+                    Instantiate(playerExplosion, other.transform.position, other.transform.rotation);
+                    GameState.playerDestroyed++;
+                    gameController.GameOver();
+                }
                else
                     gameObject.SetActive(false);
           }

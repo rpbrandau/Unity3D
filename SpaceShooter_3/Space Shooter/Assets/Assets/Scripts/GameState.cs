@@ -7,4 +7,5 @@ public class GameState : MonoBehaviour {
      public static int bossesNotDestroyed;
      public static int playerDestroyed;
      public static float timeToShieldDown;
+     public static int fuelAmount;
 }
