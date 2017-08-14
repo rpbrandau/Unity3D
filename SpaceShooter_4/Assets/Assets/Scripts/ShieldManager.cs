@@ -30,10 +30,16 @@ public class ShieldManager : MonoBehaviour {
      /* Provide a visual indication to player when shield collider is hit by an enemy object or shot. 
         Actual destruction of enemy is accomplishe dvia the Enemy object's DestroyBycontact.cs script. */
      void OnTriggerEnter(Collider other) {
-          if ( other.CompareTag("Enemy") || other.CompareTag("Boss_1") || other.CompareTag("Boss_2")
-            || other.CompareTag("Boss_3") || other.CompareTag("Boss_4") || other.CompareTag("Boss_5") 
-            || other.CompareTag("Boss_6")) {
+          if (other.CompareTag("Enemy")) {
+               Destroy(other.gameObject);
                Instantiate(explosion, other.transform.position, other.transform.rotation);
+               return;
+          }
+          if(other.CompareTag("Boss_1") || other.CompareTag("Boss_2") || other.CompareTag("Boss_3")
+             || other.CompareTag("Boss_4") || other.CompareTag("Boss_5") || other.CompareTag("Boss_6")) {
+
+               Instantiate(explosion, other.transform.position, other.transform.rotation);
+
           }
      }
 

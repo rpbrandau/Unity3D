@@ -10,11 +10,14 @@ public class GameController : MonoBehaviour {
 
      private bool gameOver;
      private bool restart;
-     private float fadeTime;
      private bool allSpawnsCompleted;
+     private bool pupSpawned;
+     private float fadeTime;
+     private int sceneID;
 
      public GameObject[] hazards;
      public GameObject[] bosses;
+     public GameObject[] pickUps;
      public GUIText gameOverText;
      public GUIText restartText;
      public GUIText scoreText;
@@ -25,9 +28,11 @@ public class GameController : MonoBehaviour {
      public int hazardCount;
      public int bossCount;
      public int waveCount;
+     public int pickUpLimiter;
      public float spawnWait;
      public float startWait;
      public float waveWait;
+
 
      // Parallel arrays to control and manage Boss behaviour.
      int[] registerBossType;
@@ -131,12 +136,26 @@ public class GameController : MonoBehaviour {
      IEnumerator SpawnWaves() {
           yield return new WaitForSeconds(startWait);
           while (waveCount > 0) {
-               for (int i = 0; i < hazardCount; i++) {
+               for (int i = 1; i <= hazardCount; i++) {
+                    // Spawn Fuel and/or Shield pickups. 
+                    if(i % pickUpLimiter == 0) {
+                         GameObject pickUp = pickUps[Random.Range(0, pickUps.Length)];
+                         Vector3 PUPspawnPosition = new Vector3(Random.Range(-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
+                         Quaternion PUPspawnRotation = Quaternion.identity;
+                         Instantiate(pickUp, PUPspawnPosition, PUPspawnRotation);
+                         yield return new WaitForSeconds(spawnWait);
+                         sceneID = SceneManager.GetActiveScene().buildIndex;
+                         if(sceneID != 6) // Winner level.
+                              continue;
+                    }
+                    // Spawn enemies from hazards[].
                     GameObject hazard = hazards[Random.Range(0, hazards.Length)];
                     Vector3 spawnPosition = new Vector3(Random.Range(-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
                     Quaternion spawnRotation = Quaternion.identity;
                     Instantiate(hazard, spawnPosition, spawnRotation);
+                    
                     yield return new WaitForSeconds(spawnWait);
+
                }
 
                waveCount--;
@@ -303,4 +322,5 @@ public class GameController : MonoBehaviour {
 [4] http://answers.unity3d.com/questions/447142/how-to-program-a-pauseunpause-button-in-c.html
 [5] http://answers.unity3d.com/questions/1189512/how-do-i-check-if-all-booleans-in-an-array-are-tru.html
 [6] https://stackoverflow.com/questions/5678216/all-possible-c-sharp-array-initialization-syntaxes
+[7] https://stackoverflow.com/questions/1351925/why-does-2-mod-4-2/1351931
 */
